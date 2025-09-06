@@ -11,6 +11,13 @@ import { useLoginUserStore } from '@/stores/useLoginUserStore'
 const loginUserStore = useLoginUserStore()
 loginUserStore.fetchLoginUser()
 
+import { healthUsingGet } from '@/api/mainController'
+
+healthUsingGet().then((res) => {
+  console.log(res)
+})
+
+
 </script>
 
 <style scoped>
