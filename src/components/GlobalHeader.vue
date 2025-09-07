@@ -77,6 +77,11 @@ const originItems = [
     title: '创建图片',
   },
   {
+    key: '/admin/pictureManage',
+    label: '图片管理',
+    title: '图片管理',
+  },
+  {
     key: 'others',
     label: h('a', { href: 'https://github.com/ShunheWang', target: '_blank' }, 'Github'),
     title: 'Github',
