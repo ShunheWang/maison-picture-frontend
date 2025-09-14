@@ -16,6 +16,7 @@ import { uploadPictureByUrlUsingPost, uploadPictureUsingPost } from '@/api/pictu
 
 interface Props {
   picture?: API.PictureVO
+  spaceId?: number
   onSuccess?: (newPicture: API.PictureVO) => void
 }
 
@@ -29,7 +30,9 @@ const fileUrl = ref<string>()
 const handleUpload = async () => {
   loading.value = true
   try {
-    const params: API.PictureUploadRequest = { fileUrl: fileUrl.value }
+    // 上传时传递 spaceId
+    const params: API.PictureUploadRequest = props.picture ? { id: props.picture.id } : {}
+    params.spaceId = props.spaceId;
     if (props.picture) {
       params.id = props.picture.id
     }
