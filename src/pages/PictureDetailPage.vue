@@ -120,7 +120,6 @@ const canEdit = computed(() => {
 })
 
 // 编辑
-// 编辑
 const doEdit = () => {
   router.push({
     path: '/add_picture',

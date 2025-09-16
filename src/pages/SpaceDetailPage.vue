@@ -7,6 +7,7 @@
         <a-button type="primary" :href="`/add_picture?spaceId=${id}`" target="_blank">
           + 创建图片
         </a-button>
+        <a-button :icon="h(EditOutlined)" @click="doBatchEdit"> 批量编辑</a-button>
         <a-tooltip
           :title="`占用空间 ${formatSize(space.totalSize)} / ${formatSize(space.maxSize)}`"
         >
@@ -36,23 +37,29 @@
       :show-total="() => `图片总数 ${total} / ${space.maxCount}`"
       @change="onPageChange"
     />
+    <BatchEditPictureModal
+      ref="batchEditPictureModalRef"
+      :spaceId="id"
+      :pictureList="dataList"
+      :onSuccess="onBatchEditPictureSuccess"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 // 数据
 
-import { computed, onMounted, reactive, ref } from 'vue'
-import { deleteSpaceUsingPost, getSpaceVoByIdUsingGet } from '@/api/spaceController'
+import { h, onMounted, ref } from 'vue'
+import { getSpaceVoByIdUsingGet } from '@/api/spaceController'
 import { message } from 'ant-design-vue'
-import { downloadImage, formatSize } from '@/utils'
-import { useLoginUserStore } from '@/stores/useLoginUserStore'
-import router from '@/router'
+import { formatSize } from '@/utils'
 import { listPictureVoByPageUsingPost, searchPictureByColorUsingPost } from '@/api/pictureController'
 import PictureList from '@/components/PictureList.vue'
 import PictureSearchForm from '@/components/PictureSearchForm.vue'
 import { ColorPicker } from 'vue3-colorpicker'
 import "vue3-colorpicker/style.css"
+import { EditOutlined } from '@ant-design/icons-vue'
+import BatchEditPictureModal from '@/components/BatchEditPictureModal.vue'
 
 const props = defineProps<{
   id: string | number
@@ -144,6 +151,21 @@ const onColorChange = async (color: string) => {
     total.value = data.length;
   } else {
     message.error('获取数据失败，' + res.data.message)
+  }
+}
+
+// 分享弹窗引用
+const batchEditPictureModalRef = ref()
+
+// 批量编辑成功后，刷新数据
+const onBatchEditPictureSuccess = () => {
+  fetchData()
+}
+
+// 打开批量编辑弹窗
+const doBatchEdit = () => {
+  if (batchEditPictureModalRef.value) {
+    batchEditPictureModalRef.value.openModal()
   }
 }
 
