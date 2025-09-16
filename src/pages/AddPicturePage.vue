@@ -50,17 +50,28 @@
         <a-button type="primary" html-type="submit" style="width: 100%">创建</a-button>
       </a-form-item>
     </a-form>
+    <div v-if="picture" class="edit-bar">
+      <a-button :icon="h(EditOutlined)" @click="doEditPicture">编辑图片</a-button>
+      <ImageCropper
+        ref="imageCropperRef"
+        imageUrl="https://avatars2.githubusercontent.com/u/15681693?s=460&v=4"
+        :picture="picture"
+        :spaceId="spaceId"
+        :onSuccess="onCropSuccess"
+      />
+    </div>
   </div>
-
 </template>
 
 <script setup lang="ts">
 import PictureUpload from '@/components/PictureUpload.vue'
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, h, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { editPictureUsingPost, getPictureVoByIdUsingGet, listPictureTagCategoryUsingGet } from '@/api/pictureController'
 import { message } from 'ant-design-vue'
 import UrlPictureUpload from '@/components/UrlPictureUpload.vue'
+import ImageCropper from '@/components/ImageCropper.vue'
+import { EditOutlined } from '@ant-design/icons-vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -157,7 +168,20 @@ onMounted(() => {
   getOldPicture()
 })
 
+// 图片编辑弹窗引用
+const imageCropperRef = ref()
 
+// 编辑图片
+const doEditPicture = () => {
+  if (imageCropperRef.value) {
+    imageCropperRef.value.openModal()
+  }
+}
+
+// 编辑成功事件
+const onCropSuccess = (newPicture: API.PictureVO) => {
+  picture.value = newPicture
+}
 
 
 </script>
@@ -167,5 +191,11 @@ onMounted(() => {
   max-width: 720px;
   margin: 0 auto;
 }
+
+#addPicturePage .edit-bar {
+  text-align: center;
+  margin: 16px 0;
+}
+
 
 </style>
